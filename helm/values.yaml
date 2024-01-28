@@ -1,7 +1,7 @@
 modelUrl: https://huggingface.co/google/flan-t5-base
 modelName: google/flan-t5-base
 modelDir: flan-t5-base
-llmStorageSize: 32Gi
+llmStorageSize: 16Gi
 
 llmModel:
   replicaCount: 1
