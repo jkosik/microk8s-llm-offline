@@ -39,7 +39,7 @@ See [google/flan-t5-base](https://huggingface.co/google/flan-t5-base) details to
 
 ## Further considerations
 #### Mind various MicroK8S bugs and issues
-- If your IP address changes, TLS validation error may appear and MicroK8S may need to re-issue TLS certificates (see below).
+- If your IP address changes, TLS verification error may appear and MicroK8S may need to re-issue TLS certificates (see below).
 - If Helm complains on TLS validation, ensure your kubeconfig `server` address points to your external interface IP address and not `127.0.0.1`.  
 Re-created MicroK8S config by `microk8s config view > ~/.kube/config` and omit `-l` flag.
 - If pulling `ghcr.io/huggingface/text-generation-inference` image takes a lot of time and Pod is in Pending state for more than 10 minutes, pull image directly on MicroK8S node by: `microk8s ctr images pull ghcr.io/huggingface/text-generation-inference:1.4.0` and restart the pending Pod.
