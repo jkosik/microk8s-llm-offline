@@ -71,6 +71,7 @@ sudo microk8s refresh-certs -e server.crt
 sudo microk8s refresh-certs -e front-proxy-client.crt
 microk8s stop
 microk8s start
+microk8s config > ~/.kube/config
 
 # update /etc/hosts if needed accordingly
 ```
