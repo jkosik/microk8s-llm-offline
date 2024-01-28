@@ -64,13 +64,15 @@ If StorageClass is not defined, data end up in the default location in `/var/sna
 2. Delete TGI Deployment
 3. Re-deploy Helm Chart
 
-#### Re-issue MicroK8S TLS certificates
+#### Re-issue MicroK8S TLS certificates after local IP change
 ```
 sudo microk8s refresh-certs -e ca.crt
 sudo microk8s refresh-certs -e server.crt
 sudo microk8s refresh-certs -e front-proxy-client.crt
 microk8s stop
 microk8s start
+
+# update /etc/hosts if needed accordingly
 ```
 
 If it does not help, add YOUR_EXTERNAL_IP to `/var/snap/microk8s/current/certs/csr.conf.template`
