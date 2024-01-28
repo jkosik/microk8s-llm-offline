@@ -1,0 +1,23 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: microk8s-hostpath-custom
+provisioner: microk8s.io/hostpath
+reclaimPolicy: Delete
+parameters:
+  pvDir: /opt/microk8s
+volumeBindingMode: WaitForFirstConsumer
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-llm-model
+spec:
+  storageClassName: microk8s-hostpath-custom
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.llmStorageSize }}

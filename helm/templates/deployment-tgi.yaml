@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-tgi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm-tgi
+  template:
+    metadata:
+      labels:
+        app: llm-tgi
+    spec:
+      initContainers:
+        - name: check-pull
+          image: busybox:latest
+          command: ["sh", "-c"]
+          args: 
+            - |
+              cd /data
+              while true
+              do
+                if [ -f initial-clone-finished ]; then
+                  echo "Model directory \"{{ .Values.modelDir }}\" cloned. Ready to launch."
+                  break
+                fi
+                echo "Model directory \"{{ .Values.modelDir }}\" not cloned yet."
+                sleep 5
+              done
+          volumeMounts:
+            - name: data
+              mountPath: /data              
+      containers:
+        - name: llm-tgi
+          image: {{ .Values.llmTgi.image.repository}}:{{ .Values.llmTgi.image.tag }}
+          command: ["text-generation-launcher", "--model-id", "{{ .Values.modelName }}", "--num-shard", "1"]
+          env:
+            # - name: HUGGINGFACE_OFFLINE
+            #   value: "1"
+            - name: HUGGINGFACE_HUB_CACHE
+              value: /data/{{ .Values.modelDir }}
+            - name: WEIGHTS_CACHE_OVERRIDE
+              value: /data/{{ .Values.modelDir }}
+            - name: PORT
+              value: "8080"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: shm
+              mountPath: /dev/shm              
+          resources:
+            limits:
+              memory: {{ .Values.llmTgi.resources.limits.memory }}
+              cpu: {{ .Values.llmTgi.resources.limits.cpu }}
+            requests:
+              memory: {{ .Values.llmTgi.resources.requests.memory }}
+              cpu: {{ .Values.llmTgi.resources.requests.cpu }}            
+          ports:
+            - containerPort: 8080
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: pvc-llm-model
+      - name: shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
+
+

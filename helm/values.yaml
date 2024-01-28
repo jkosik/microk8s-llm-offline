@@ -1,0 +1,33 @@
+modelUrl: https://huggingface.co/google/flan-t5-base
+modelName: google/flan-t5-base
+modelDir: flan-t5-base
+llmStorageSize: 32Gi
+
+llmModel:
+  replicaCount: 1
+  image:
+    repository: jkosik/alpine-git
+    tag: latest
+  resources:
+    requests:
+      memory: 500Mi
+      cpu: 100m
+    limits:
+      memory: 2Gi
+      cpu: 1000m
+
+llmTgi:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/huggingface/text-generation-inference
+    tag: 1.4.0
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 500m
+    limits:
+      memory: 8Gi
+      cpu: 2000m    
+
+ingress:
+  host: llm-api.mydom.com

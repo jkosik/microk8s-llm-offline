@@ -1,0 +1,42 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: llm-pull-model
+spec:
+  template:
+    spec:
+      containers:
+        - name: llm-pull-model
+          image: {{ .Values.llmModel.image.repository }}:{{ .Values.llmModel.image.tag }}
+          command: ["sh", "-c"]
+          args: 
+            - |
+              cd /data
+              if [ ! -d {{ .Values.modelDir }} ]; then
+                echo "Model directory found."
+                git lfs clone --progress --depth=1 {{ .Values.modelUrl }}
+                echo "Clone finished."
+                touch initial-clone-finished 
+              else
+                echo "Pulling latest model changes."
+                cd {{ .Values.modelDir }}
+                git pull --progress
+                echo "Pull finished."
+              fi
+              # sleep infinity
+          volumeMounts:
+            - name: model
+              mountPath: /data
+          resources:
+            limits:
+              memory: {{ .Values.llmModel.resources.limits.memory }}
+              cpu: {{ .Values.llmModel.resources.limits.cpu }}
+            requests:
+              memory: {{ .Values.llmModel.resources.requests.memory }}
+              cpu: {{ .Values.llmModel.resources.requests.cpu }}
+      restartPolicy: Never
+      volumes:
+      - name: model
+        persistentVolumeClaim:
+          claimName: pvc-llm-model              
