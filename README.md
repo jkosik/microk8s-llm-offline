@@ -16,7 +16,7 @@ microk8s config > ~/.kube/config
 # Pre-pulling TGI image on K8S node prevents pending Pod. Image size is ~4GB. Adjust Tag as needed.
 microk8s ctr images pull ghcr.io/huggingface/text-generation-inference:1.4.0 
 ```
-**2. Deploy Helm Chart**
+**2. Deploy the Helm Chart**
 ```
 cd /helm
 helm upgrade --install microk8s-llm-offline .
