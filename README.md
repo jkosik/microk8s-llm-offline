@@ -12,6 +12,9 @@ sudo snap remove --purge microk8s
 sudo snap install microk8s --classic
 microk8s enable hostpath-storage dns ingress
 microk8s config > ~/.kube/config
+
+# pre-pulling TGI image on K8S node prevents pending Pod. Adjust Tag as needed.
+microk8s ctr images pull ghcr.io/huggingface/text-generation-inference:1.4.0 
 ```
 2. **Deploy Helm Chart**
 ```
@@ -120,6 +123,7 @@ Restart MicroK8S:
 ```
 microk8s stop
 microk8s start
+microk8s config > ~/.kube/config
 ```
 
 ## Docker and online LLM usage
