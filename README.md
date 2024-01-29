@@ -115,7 +115,7 @@ microk8s start
 microk8s config > ~/.kube/config
 ```
 
-## Docker and online LLM usage
+## Online LLM in Docker
 This section describes simplified use case of using Docker and online TGI LLM.  
 More info: https://github.com/huggingface/text-generation-inference/blob/main/README.md#get-started
 
