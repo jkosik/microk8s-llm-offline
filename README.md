@@ -6,7 +6,7 @@ Project uses Ubuntu,  MicroK8S and LLM with TGI (Text Generation Inference) supp
 Deployment was tested on mid-range laptop without GPU support. Code can be easily adjusted to run on any Kubernetes cluster with GPU support.
 
 ## Deployment
-1. **Install MicroK8S**
+**1. Install MicroK8S**
 ```
 sudo snap remove --purge microk8s
 sudo snap install microk8s --classic
@@ -16,13 +16,13 @@ microk8s config > ~/.kube/config
 # Pre-pulling TGI image on K8S node prevents pending Pod. Image size is ~4GB. Adjust Tag as needed.
 microk8s ctr images pull ghcr.io/huggingface/text-generation-inference:1.4.0 
 ```
-2. **Deploy Helm Chart**
+**2. Deploy Helm Chart**
 ```
 cd /helm
 helm upgrade --install microk8s-llm-offline .
 ```
 
-3. **Query the model**  
+** 3. Query the model**  
 TGI API is exposed via K8S Ingress. FQDN is defined in Helm `values.yaml` as `ingress.host` key. Update your `/etc/hosts` to resolve the FQDN to `127.0.0.1`.
 ```
 curl http://llm-api.mydom.com/generate -X POST \
