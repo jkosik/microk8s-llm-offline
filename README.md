@@ -42,30 +42,18 @@ See [google/flan-t5-base](https://huggingface.co/google/flan-t5-base) details to
 
 ## Further considerations
 #### Mind various MicroK8S bugs and issues
-- If your IP address changes, TLS verification error may appear and MicroK8S may need to re-issue TLS certificates (see below).
-- If Helm complains on TLS validation, ensure your kubeconfig `server` address points to your external interface IP address and not `127.0.0.1`.  
-Re-created MicroK8S config by `microk8s config view > ~/.kube/config` and omit `-l` flag.
+- If your IP address changes, TLS validation error may appear and MicroK8S may need to re-issue TLS certificates (see re-issuance process below).
+- If Helm complains on TLS validation, ensure `server` address in your kubeconfig points to your external interface IP address and not `127.0.0.1`.  
 - If pulling `ghcr.io/huggingface/text-generation-inference` image takes a lot of time and Pod is in Pending state for more than 10 minutes, pull image directly on MicroK8S node by: `microk8s ctr images pull ghcr.io/huggingface/text-generation-inference:1.4.0` and restart the pending Pod.
-
-#### Test offline mode. 
-Once Deployment finishes and no further in-K8S calls are needed, simply stop egress communication and model should be still responsive.
-```
-# Disable egress
-sudo iptables -A OUTPUT -j DROP -o [YOUR INTERFACE]
-
-# Re-enable egress
-sudo iptables -D OUTPUT -j DROP -o [YOUR INTERFACE]
-```
 
 #### Model storage
 K8S StorageClass defines where K8S Persistent Volume stores LLM data. In our case it is `/opt/microk8s/PVC_NAME/`.  
 If StorageClass is not defined, data end up in the default location in `/var/snap/microk8s/common/default-storage/`
 
-
 #### Pull fresh LLM
 1. Delete pull Job
 2. Delete TGI Deployment
-3. Re-deploy Helm Chart
+3. Re-deploy the Helm Chart
 
 #### Re-issue MicroK8S TLS certificates after local IP change
 ```
@@ -79,7 +67,7 @@ microk8s config > ~/.kube/config
 # update /etc/hosts if needed accordingly
 ```
 
-If it does not help, add YOUR_EXTERNAL_IP to `/var/snap/microk8s/current/certs/csr.conf.template`
+If steps above do not help, add YOUR_EXTERNAL_IP to `/var/snap/microk8s/current/certs/csr.conf.template`
 ```
 [ req ]
 default_bits = 2048
@@ -127,7 +115,7 @@ microk8s config > ~/.kube/config
 ```
 
 ## Docker and online LLM usage
-This section describes simplified use case of using Docker and online TGI LLM usage.  
+This section describes simplified use case of using Docker and online TGI LLM.  
 More info: https://github.com/huggingface/text-generation-inference/blob/main/README.md#get-started
 
 ```
@@ -142,4 +130,4 @@ curl 127.0.0.1:8080/generate \
 -H 'Content-Type: application/json'
 ```
 
-When using private LLM models from Hugging Face, register, get `read` token and export as `token=YOUR_READ_TOKEN` and extend the `docker` command by `-e HUGGING_FACE_HUB_TOKEN=$token`.
+When using private LLM models from Hugging Face, register at Hugging Face, get `read` token and export token as `token=YOUR_READ_TOKEN` and extend the `docker` command by `-e HUGGING_FACE_HUB_TOKEN=$token`.
