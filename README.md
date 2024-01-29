@@ -22,7 +22,7 @@ cd /helm
 helm upgrade --install microk8s-llm-offline .
 ```
 
-** 3. Query the model**  
+**3. Query the model**  
 TGI API is exposed via K8S Ingress. FQDN is defined in Helm `values.yaml` as `ingress.host` key. Update your `/etc/hosts` to resolve the FQDN to `127.0.0.1`.
 ```
 curl http://llm-api.mydom.com/generate -X POST \
