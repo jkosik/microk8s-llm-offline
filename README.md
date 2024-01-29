@@ -13,7 +13,7 @@ sudo snap install microk8s --classic
 microk8s enable hostpath-storage dns ingress
 microk8s config > ~/.kube/config
 
-# pre-pulling TGI image on K8S node prevents pending Pod. Adjust Tag as needed.
+# Pre-pulling TGI image on K8S node prevents pending Pod. Image size is ~4GB. Adjust Tag as needed.
 microk8s ctr images pull ghcr.io/huggingface/text-generation-inference:1.4.0 
 ```
 2. **Deploy Helm Chart**
